@@ -26,11 +26,13 @@ import torch.nn as nn
 
 
 # Creating the network
-# using RNN for the moment
+# using LSTM for the moment
 
-class RNN(nn.Module):
+#TODO Writting things correctly to do some LSTM (maybe with the help of sequence_models_tutorial.py)
+
+class LSTM(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
-        super(RNN, self).__init__()
+        super(LSTM, self).__init__()
         self.hidden_size = hidden_size
 
         self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
@@ -55,10 +57,6 @@ class RNN(nn.Module):
 
 
 
-# THINGS STILL NOT TRANSLATED IN PYTORCH (Still in keras)
-#TODO Translate the following in pytorch (with the help of pytorch tutorial on name_generator)
-
-
 
 def sample(a, temperature=1.0):
 	# helper function to sample an index from a probability array
@@ -81,20 +79,20 @@ def vectorize(sentences,maxlen,num_chars,char_indices):
 
 def train(X_in,Y_out):
     #target_line_tensor.unsqueeze_(-1)
-    hidden = rnn.initHidden()
+    hidden = lstm.initHidden()
 
-    rnn.zero_grad()
+    lstm.zero_grad()
 
     loss = 0
 
     for i in range(len(X_in) - 1):
-        output, hidden = rnn(X_in[i], hidden)
+        output, hidden = lstm(X_in[i], hidden)
         l = criterion(output, Y_out[i+1])
         loss += l
 
     loss.backward()
 
-    for p in rnn.parameters():
+    for p in lstm.parameters():
         p.data.add_(-learning_rate, p.grad.data)
 
     return output, loss.item() / X.size(0)
@@ -145,7 +143,7 @@ X, Y = vectorize(sentences,maxlen,num_chars,char_indices)
 # build the model: stacked LSTM
 #model = get_model(maxlen, num_chars)
 
-rnn = RNN(num_chars, 128, num_chars)
+lstm = LSTM(num_chars, 128, num_chars)
 
 n_iters = 100
 print_every = 5
