@@ -21,3 +21,5 @@ Les commandes utiles github/terminal :
 "git commit" modifier le repo local
 "git push" push le repo local vers la branche en ligne.
 
+JE RAJOUTE MON GRAIN DE SEL (Greg)
+
