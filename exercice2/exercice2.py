@@ -19,10 +19,10 @@ import torch.nn as nn
 # THINGS TRANSLATED IN PYTORCH
 
 
-# Importing dataset
+# Importing dataset (already dyone in main)
 
-all_chords = #list of chords to write
-n_chords = len(all_chords) + 1 # Plus EOS marker
+#all_chords = #list of chords to write
+#n_chords = len(all_chords) + 1 # Plus EOS marker
 
 
 # Creating the network
@@ -33,14 +33,14 @@ class RNN(nn.Module):
         super(RNN, self).__init__()
         self.hidden_size = hidden_size
 
-        self.i2h = nn.Linear(n_categories + input_size + hidden_size, hidden_size)
-        self.i2o = nn.Linear(n_categories + input_size + hidden_size, output_size)
+        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
+        self.i2o = nn.Linear(input_size + hidden_size, output_size)
         self.o2o = nn.Linear(hidden_size + output_size, output_size)
         self.dropout = nn.Dropout(0.1)
         self.softmax = nn.LogSoftmax(dim=1)
 
-    def forward(self, category, input, hidden):
-        input_combined = torch.cat((category, input, hidden), 1)
+    def forward(self, input, hidden):
+        input_combined = torch.cat((input, hidden), 1)
         hidden = self.i2h(input_combined)
         output = self.i2o(input_combined)
         output_combined = torch.cat((hidden, output), 1)
@@ -53,8 +53,11 @@ class RNN(nn.Module):
         return torch.zeros(1, self.hidden_size)
 
 
+
+
 # THINGS STILL NOT TRANSLATED IN PYTORCH (Still in keras)
-#TODO Translate the following in pytorch (with the help of pytorch tutorial on name_generator
+#TODO Translate the following in pytorch (with the help of pytorch tutorial on name_generator)
+
 
 
 def sample(a, temperature=1.0):
@@ -63,120 +66,125 @@ def sample(a, temperature=1.0):
 	a = np.exp(a) / np.sum(np.exp(a))
 	return np.argmax(np.random.multinomial(1, a, 1))
 
-def vectorize(sentences,maxlen,num_chars,char_indices,next_chars):
-	max_dataset_lenght = 1000
+def vectorize(sentences,maxlen,num_chars,char_indices):
+	max_dataset_lenght = 10000
 	print('Vectorization...')
 	len_dataset = min(max_dataset_lenght, len(sentences))
-	X = np.zeros((len_dataset, maxlen, num_chars), dtype=np.bool)
-	y = np.zeros((len_dataset, num_chars), dtype=np.bool)
+	X = torch.zeros(len_dataset, maxlen, 1, num_chars)
+	Y = torch.zeros((len_dataset, maxlen, 1),dtype = torch.long)
 	for i, sentence in enumerate(sentences[0:len_dataset]):
 		for t, char in enumerate(sentence[0:len_dataset]):
-			X[i, t, char_indices[char]] = 1
-		y[i, char_indices[next_chars[i]]] = 1
-	return X, y
+			X[i, t, 0, char_indices[char]] = 1
+			Y[i, t, 0] = char_indices[char]
+	return X, Y
 
-def main(character_mode):
 
-	path = 'chord_sentences.txt' # the txt data source
-	text = open(path).read()
-	print('corpus length:', len(text))
+def train(X_in,Y_out):
+    #target_line_tensor.unsqueeze_(-1)
+    hidden = rnn.initHidden()
 
-	if character_mode:
-		chars = set(text)
-	else:
-		chord_seq = text.split(' ')
-		chars = set(chord_seq)
-		text = chord_seq
+    rnn.zero_grad()
 
-	char_indices = dict((c, i) for i, c in enumerate(chars))
-	indices_char = dict((i, c) for i, c in enumerate(chars))
-	num_chars = len(char_indices)
-	print('total chars:', num_chars)
+    loss = 0
 
-	# cut the text in semi-redundant sequences of maxlen characters
-	maxlen = 20
-	step = 3
-	sentences = []
-	next_chars = []
-	for i in range(0, len(text) - maxlen, step):
-		sentences.append(text[i: i + maxlen])
-		next_chars.append(text[i + maxlen])
-	print('nb sequences:', len(sentences))
+    for i in range(len(X_in) - 1):
+        output, hidden = rnn(X_in[i], hidden)
+        l = criterion(output, Y_out[i+1])
+        loss += l
 
-	# text to vectors
-	X, y = vectorize(sentences,maxlen,num_chars,char_indices,next_chars)
-	# build the model: stacked LSTM
-	model = get_model(maxlen, num_chars)
-	# train the model, output generated text after each iteration
-	for iteration in range(1, 60):
-		print()
-		print('-' * 50)
-		print('Iteration', iteration)
-		with open(('result_iter_%02d.txt' % iteration), 'w') as f_write:
+    loss.backward()
 
-			model.fit(X, y, batch_size=512, nb_epoch=1)
-			start_index = random.randint(0, len(text) - maxlen - 1)
+    for p in rnn.parameters():
+        p.data.add_(-learning_rate, p.grad.data)
 
-			for diversity in [0.8, 1.0, 1.2]:
-				print()
-				print('----- diversity:', diversity)
-				f_write.write('diversity:%4.2f\n' % diversity)
-				if character_mode:
-					generated = ''
-				else:
-					generated = []
-				sentence = text[start_index: start_index + maxlen]
-				seed_sentence = text[start_index: start_index + maxlen]
-				
-				if character_mode:
-					generated += sentence
-				else:
-					generated = generated + sentence
-				
-				print('----- Generating with seed:')
-				if character_mode:
-					print(sentence)
-					sys.stdout.write(generated)
-				else:
-					print(' '.join(sentence))
+    return output, loss.item() / X.size(0)
 
-				if character_mode:
-					num_char_pred = 1500
-				else:
-					num_char_pred = 150
+import time
+import math
 
-				for i in range(num_char_pred):
-					x = np.zeros((1, maxlen, num_chars))
-					
-					for t, char in enumerate(sentence):
-						x[0, t, char_indices[char]] = 1.
+def timeSince(since):
+    now = time.time()
+    s = now - since
+    m = math.floor(s / 60)
+    s -= m * 60
+    return '%dm %ds' % (m, s)
 
-					preds = model.predict(x, verbose=0)[0]
-					next_index = sample(preds, diversity)
-					next_char = indices_char[next_index]
-					
-					if character_mode:
-						generated += next_char
-						sentence = sentence[1:] + next_char
-					else:
-						generated.append(next_char)
-						sentence = sentence[1:]
-						sentence.append(next_char)
+character_mode = False
 
-					if character_mode:
-						sys.stdout.write(next_char)
+path = 'chord_sentences.txt' # the txt data source
+text = open(path).read()
+print('corpus length:', len(text))
 
-					sys.stdout.flush()
-				print()
+if character_mode:
+	chars = set(text)
+else:
+	chord_seq = text.split(' ')
+	chars = set(chord_seq)
+	text = chord_seq
 
-				if character_mode:
-					f_write.write(seed_sentence + '\n')
-					f_write.write(generated)
-				else:
-					f_write.write(' '.join(seed_sentence) + '\n')
-					f_write.write(' ' .join(generated))
-				f_write.write('\n\n')
-	return
+char_indices = dict((c, i) for i, c in enumerate(chars))
+indices_char = dict((i, c) for i, c in enumerate(chars))
+num_chars = len(char_indices)
+print('total chars:', num_chars)
 
-if __name__=='__main__':
-	main(character_mode=True)
+# cut the text in semi-redundant sequences of maxlen characters
+maxlen = 20
+step = 3
+sentences = []
+#next_chars = []
+for i in range(0, len(text) - maxlen, step):
+	sentences.append(text[i: i + maxlen])
+	#next_chars.append(text[i + maxlen])
+print('nb sequences:', len(sentences))
+
+# text to vectors
+X, Y = vectorize(sentences,maxlen,num_chars,char_indices)
+
+
+
+# build the model: stacked LSTM
+#model = get_model(maxlen, num_chars)
+
+rnn = RNN(num_chars, 128, num_chars)
+
+n_iters = 100
+print_every = 5
+plot_every = 5
+all_losses = []
+total_loss = 0 # Reset every plot_every iters
+
+start = time.time()
+
+criterion = nn.NLLLoss()
+
+learning_rate = 0.0005
+
+for iter in range(1, n_iters + 1):
+	index_in_data = iter % len(X)
+	output, loss = train(X[index_in_data], Y[index_in_data])
+	total_loss += loss
+
+	if iter % print_every == 0:
+	    print('%s (%d %d%%) %.4f' % (timeSince(start), iter, iter / n_iters * 100, loss))
+
+	if iter % plot_every == 0:
+	    all_losses.append(total_loss / plot_every)
+	    total_loss = 0
+
+
+######################################################################
+# Plotting the Losses
+# -------------------
+#
+# Plotting the historical loss from all\_losses shows the network
+# learning:
+#
+
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+plt.figure()
+plt.plot(all_losses)
+plt.show()
+
+

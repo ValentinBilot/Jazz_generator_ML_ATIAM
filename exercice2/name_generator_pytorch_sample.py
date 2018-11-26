@@ -159,7 +159,7 @@ class RNN(nn.Module):
         self.dropout = nn.Dropout(0.1)
         self.softmax = nn.LogSoftmax(dim=1)
 
-    def forward(self, category, input, hidden):
+    def forward(self, category,input, hidden):
         input_combined = torch.cat((category, input, hidden), 1)
         hidden = self.i2h(input_combined)
         output = self.i2o(input_combined)
@@ -281,6 +281,7 @@ def train(category_tensor, input_line_tensor, target_line_tensor):
 
     for i in range(input_line_tensor.size(0)):
         output, hidden = rnn(category_tensor, input_line_tensor[i], hidden)
+        print(target_line_tensor[i])
         l = criterion(output, target_line_tensor[i])
         loss += l
 
