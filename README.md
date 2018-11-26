@@ -4,3 +4,6 @@ Machine Learning Project to generate jazz like a boss
 Premier boulot pour nos nouveaux utilisateurs de github : 
 
 Faites un petit commit en écrivant deux trois conneries après ceci :)
+
+
+Là j'écris une connerie pour faire genre signé val
