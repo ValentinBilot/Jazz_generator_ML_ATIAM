@@ -1,4 +1,4 @@
-# Jazz_generator_ML_ATIAM
+﻿# Jazz_generator_ML_ATIAM
 Machine Learning Project to generate jazz like a boss
 
 Premier boulot pour nos nouveaux utilisateurs de github : 
@@ -22,4 +22,4 @@ Les commandes utiles github/terminal :
 "git push" push le repo local vers la branche en ligne.
 
 JE RAJOUTE MON GRAIN DE SEL (Greg)
-
+ET MWA OSSIIIII (Hugo)
