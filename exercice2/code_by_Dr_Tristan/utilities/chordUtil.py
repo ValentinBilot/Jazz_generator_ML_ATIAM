@@ -107,6 +107,7 @@ a1 = {
     'sus4':    'N',
     'sus2':    'N',
     '7':       'maj',
+	'6':    'maj', #add
     'maj7':    'maj',
     'min7':    'min',
     'minmaj7': 'min',
