@@ -139,7 +139,7 @@ a2 = {
     'dim':     'dim',
     'sus4':    'N',
     'sus2':    'N',
-    '6':    '6', #add
+    '6':    'maj', #add
     '7':       '7',
     'maj7':    'maj7',
     'min7':    'min7',
@@ -172,7 +172,7 @@ a3 = {
     'dim':     'dim',
     'sus4':    'sus',
     'sus2':    'sus',
-    '6':    '6', #add
+    '6':    'maj6', #add
     '7':       '7',
     'maj7':    'maj7',
     'min7':    'min7',
@@ -205,7 +205,7 @@ a5 = {
     'dim':     'dim',
     'sus4':    'sus4',
     'sus2':    'sus2',
-    '6':    '6', #add
+    '6':    'maj6', #add
     '7':       '7',
     'maj7':    'maj7',
     'min7':    'min7',
