@@ -169,9 +169,9 @@ def matrice_dist(list_of_chords):
             M[i,j] = distance(list_of_chords[i],list_of_chords[j])
     return M
             
-M = matrice_dist(TOTAL_Q)
+#M = matrice_dist(TOTAL_Q)
 
-print(M)
+#print(M)
 
 
 def tonalité():  
@@ -188,7 +188,29 @@ def tonalité():
     
 
 
+def test():
 
+	import random
+	from random import randint
+	for i in range(10000):
+		a = randint(3,4)
+		b = randint(3,4)
+		c = randint(3,4)
+		l1 = []
+		l2 = []
+		l3 = []
+		for j in range(a):
+			l1.append(randint(0,11))
+		for j in range(b):
+			l2.append(randint(0,11))
+		for j in range(c):
+			l3.append(randint(0,11))
+		if i%1000:
+			print(str(i)+" itérations et tout va bien")
+		if int(distance(l1,l2)) > int(distance(l1,l3) + distance(l2,l3)):
+			print("triste")
+			return l1, l2, l3
+	
 
 
 
