@@ -25,9 +25,9 @@ def PlotResults(all_losses, test_losses, accuracy_train, accuracy_test):
 	plt.figure()
 	plt.title("Accuracy")
 	plt.plot(accuracy_train, label="train")
-	plt.legend(loc='upper right', frameon=False)
+	plt.legend(loc='upper left', frameon=False)
 	plt.plot(accuracy_test, label="test")
-	plt.legend(loc='upper right', frameon=False)
+	plt.legend(loc='upper left', frameon=False)
 	plt.show()
 
 
@@ -47,12 +47,14 @@ def PlotAllResults(data):
         plt.legend(loc='upper right', frameon=False)
         counter+=len(data[3][i])-1
     plt.show()
-    plt.figure()
 
+
+    plt.figure()
+    plt.title("Accuracy")
     counter = 0
     for i in range(1, superEpochs+1):
         plt.plot(range(counter, counter+len(data[3][i])),data[5][i], colorsTrain[i-1], label="train"+str(i))
         plt.plot(range(counter, counter+len(data[3][i])),data[6][i], colorsTest[i-1], label="test"+str(i))
-        plt.legend(loc='upper right', frameon=False)
+        plt.legend(loc='upper left', frameon=False)
         counter+=len(data[3][i])-1
     plt.show()
