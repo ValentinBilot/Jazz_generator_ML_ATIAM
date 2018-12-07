@@ -42,9 +42,9 @@ def PlotAllResults(data):
 
     counter = 0
     for i in range(1, superEpochs+1):
-        plt.plot(range(counter,counter+len(data[3][i])),data[3][i], colorsTrain[i-1], label="train"+str(i))
+        plt.plot(range(counter,counter+len(data[3][i])),data[3][i], colorsTrain[i-1], label="train"+str(i)+" "+data[1][i]+" "+data[2][i]+" "+data[7][i]+" lr = "+str(data[8][i]))
         plt.plot(range(counter,counter+len(data[3][i])),data[4][i], colorsTest[i-1] , label="test"+str(i))
-        plt.legend(loc='upper right', frameon=False)
+        plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         counter+=len(data[3][i])-1
     plt.show()
 
@@ -53,8 +53,8 @@ def PlotAllResults(data):
     plt.title("Accuracy")
     counter = 0
     for i in range(1, superEpochs+1):
-        plt.plot(range(counter, counter+len(data[3][i])),data[5][i], colorsTrain[i-1], label="train"+str(i))
+        plt.plot(range(counter, counter+len(data[3][i])),data[5][i], colorsTrain[i-1], label="train"+str(i)+" "+data[1][i]+" "+data[2][i]+" "+data[7][i]+" lr = "+str(data[8][i]))
         plt.plot(range(counter, counter+len(data[3][i])),data[6][i], colorsTest[i-1], label="test"+str(i))
-        plt.legend(loc='upper left', frameon=False)
+        plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         counter+=len(data[3][i])-1
     plt.show()

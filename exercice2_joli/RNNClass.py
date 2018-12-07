@@ -28,7 +28,7 @@ class MYRNN(nn.Module):
         self.softmax = nn.LogSoftmax(dim=1)
 
         # Usefull for monitoring
-        self.trainingData = [[0],["None"],["None"],[[0]],[[0]],[[0]],[[0]],[0]]
+        self.trainingData = [[0],["None"],["None"],[[0]],[[0]],[[0]],[[0]],[0],[0]]
 
 
     def forward(self, input_batch):
@@ -49,6 +49,7 @@ class MYRNN(nn.Module):
     # 5 is accuracy on train set
     # 6 is accuracy on test set
     # 7 is time
+    # 8 is learning rate
 
     def trainAndTest(self, model_type, print_every, plot_every, optimizer, lossFunction, alphabet='a0', sequence_lenght=16, using_cuda=True, batch_size=128, shuffle=True, num_workers=6, hidden_size=128, num_layers=2, dropout=0.1, learning_rate=1e-4, epochs=10):
         if using_cuda:
@@ -76,6 +77,7 @@ class MYRNN(nn.Module):
         self.trainingData[5].append(accuracy_train)
         self.trainingData[6].append(accuracy_test)
         self.trainingData[7].append(plotAndTimeUtil.timeSince(start))
+        self.trainingData[8].append(learning_rate)
         print("Finished Training")
 
 
