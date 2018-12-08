@@ -47,17 +47,14 @@ C1 =       [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 C5 =       [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
 
 
-
-def Nb_Notes(chord):
-    return sum(chord)
-
-#Nb_Notes(Cmaj)=3
-
 def chord_to_chordNb(chord):
+    
     chordNb=[]
+    
     for i in range (0,12):
         if chord[i]==1:
             chordNb.append(i)
+            
     return chordNb
 
 #chord_to_chordNb(Cmaj)=[0,4,7]
@@ -68,9 +65,9 @@ Définitions de tous les accords utiles
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-#C = [Cmaj, Cmin, Cdim, C7, Cmaj7, Cmin7]
+CHORDS_TO_STUDY = [Cmaj, Cmin]    #paramètre à changer
   
-C = [Cmaj, Cmin]
+C = CHORDS_TO_STUDY
 
 C = [chord_to_chordNb(i) for i in C]        #Cercle chromatique
 
@@ -114,43 +111,66 @@ Fonctions Distances entre 2 Accords
 #list(itertools.permutations([1, 2, 3])) = [(1, 2, 3), (1, 3, 2), (2, 1, 3), (2, 3, 1), (3, 1, 2), (3, 2, 1)]
         
         
-def distance_trql(chordNb1,chordNb2):        #Pour deux accords avec le mêmes nombre de notes 
+def distance_trql(chordNb1,chordNb2,p):        #Pour deux accords avec le mêmes nombre de notes 
+    
     permutation = list(itertools.permutations(chordNb2))
     dist = []
+    
     for i in range (0,len(permutation)):
-        s = 0
+        Sum = 0
+        
         for j in range(0,len(chordNb1)) :
-            s += min((chordNb1[j] - permutation[i][j])%12,(permutation[i][j] - chordNb1[j])%12)
-        dist.append(s)
+            Sum += min(((chordNb1[j] - permutation[i][j])%12)**p,((permutation[i][j] - chordNb1[j])%12)**p)
+            Sum = Sum**(1/p)
+            
+        dist.append(Sum)
+        
     return min(dist)
         
 #distance_trql([0,4,7],[0,3,7]) = 1 
 
-
-def distance(chord1,chord2):
+def add_notes(chord1,chord2):     #utile si les deux accords n'ont pas le même nb de notes
+    
+    result = [chord1]
+    
+    for k in range (len(chord2)-len(chord1)):
+        temp=[]
+        
+        for l in result :
+            
+            for note in chord1 :
+                temp.append(l+[note])
+                
+        result = temp
+        
+    return result
+            
+#add_notes([0,4,7],[0,4,7,10]) = [[0, 4, 7, 0], [0, 4, 7, 4], [0, 4, 7, 7]]
+    
+    
+def distance(chord1,chord2,p=1):
     
     if len(chord1) == len(chord2):
-        return distance_trql(chord1,chord2)
+        
+        return distance_trql(chord1,chord2,p)
     
     if len(chord1) > len(chord2):
+        
         temp = chord1
         chord1 = chord2
         chord2 = temp
     
     if len(chord1) < len(chord2):
+        
         dist_ajout_de_notes=[]
-        temp = chord1.copy()
-        for note in chord1 :       #on va ajouter un note qu'il continet déjà à l'accord le plus pauvre
-            temp.append(note)
-            if len(chord2) - len(temp) != 0 :
-                return('Accord trop différents')
-            else :
-                dist_ajout_de_notes.append(distance_trql(temp,chord2))
-            temp = temp[:-1]     #enlève le dernier élément de la liste pour revenir à la liste originale
+        new_chord1 = add_notes(chord1,chord2)     #on va regarder toutes les possibilités possible
+        
+        for chord in new_chord1:
+            dist_ajout_de_notes.append(distance_trql(chord,chord2,p))
+
         return min(dist_ajout_de_notes)
 
-#distance([0, 4, 7] , [0, 4, 7, 10]) = 3
-
+#distance([0, 4, 7] , [0, 4, 7, 10]) = 2
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -161,17 +181,19 @@ Matrice de distance
     
 
 
-def matrice_dist(list_of_chords):
+def matrice_dist(list_of_chords,p=1):
     n = len(list_of_chords)
     M = np.ones((n,n))
     for i in range (0,n) :
         for j in range (0,n) :
-            M[i,j] = distance(list_of_chords[i],list_of_chords[j])
+            M[i,j] = round(distance(list_of_chords[i],list_of_chords[j],p),2)
     return M
             
-#M = matrice_dist(TOTAL_Q)
+M1 = matrice_dist(TOTAL_Q,1)
+M2 = matrice_dist(TOTAL_Q,2)
+m2 = matrice_dist(TOTAL_Q,0.5)
+M10 = matrice_dist(TOTAL_Q,10)
 
-#print(M)
 
 
 def tonalité():  
@@ -210,30 +232,8 @@ def test():
 		if int(distance(l1,l2)) > int(distance(l1,l3) + distance(l2,l3)):
 			print("triste")
 			return l1, l2, l3
-	
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#temp = temp[:-1]     #enlève le dernier élément de la liste
 
 
