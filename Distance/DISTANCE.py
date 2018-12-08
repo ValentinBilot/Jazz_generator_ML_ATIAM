@@ -2,12 +2,18 @@
 """
 Created on Fri Nov 30 11:51:06 2018
 
-@author: Paul
+@author: Paul & Valentin
 """
 
 
 import itertools
 import numpy as np
+
+
+def getPaulMatrix():
+	TOTAL, TOTAL_Q = getChords()
+	M = matrice_dist(TOTAL_Q,1)
+	return(M)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -59,48 +65,7 @@ def chord_to_chordNb(chord):
 
 #chord_to_chordNb(Cmaj)=[0,4,7]
     
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Définitions de tous les accords utiles
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-CHORDS_TO_STUDY = [Cmaj, Cmin]    #paramètre à changer
-  
-C = CHORDS_TO_STUDY
-
-C = [chord_to_chordNb(i) for i in C]        #Cercle chromatique
-
-C_quintes = [sorted([(7*i)%12 for i in j]) for j in C]   #Cercle des quintes
-
-
-Cd = [sorted([(1+i)%12 for i in j]) for j in C] 
-D  = [sorted([(2+i)%12 for i in j]) for j in C]
-Dd = [sorted([(3+i)%12 for i in j]) for j in C] 
-E  = [sorted([(4+i)%12 for i in j]) for j in C] 
-F  = [sorted([(5+i)%12 for i in j]) for j in C] 
-Fd = [sorted([(6+i)%12 for i in j]) for j in C] 
-G  = [sorted([(7+i)%12 for i in j]) for j in C] 
-Gd = [sorted([(8+i)%12 for i in j]) for j in C] 
-A  = [sorted([(9+i)%12 for i in j]) for j in C] 
-Ad = [sorted([(10+i)%12 for i in j]) for j in C] 
-B  = [sorted([(11+i)%12 for i in j]) for j in C]
-
-Cd_quintes = [sorted([(7*i)%12 for i in j]) for j in Cd]
-D_quintes  = [sorted([(7*i)%12 for i in j]) for j in D]
-Dd_quintes = [sorted([(7*i)%12 for i in j]) for j in Dd]
-E_quintes  = [sorted([(7*i)%12 for i in j]) for j in E]
-F_quintes  = [sorted([(7*i)%12 for i in j]) for j in F]
-Fd_quintes = [sorted([(7*i)%12 for i in j]) for j in Fd]
-G_quintes  = [sorted([(7*i)%12 for i in j]) for j in G]
-Gd_quintes = [sorted([(7*i)%12 for i in j]) for j in Gd]
-A_quintes  = [sorted([(7*i)%12 for i in j]) for j in A]
-Ad_quintes = [sorted([(7*i)%12 for i in j]) for j in Ad]
-B_quintes  = [sorted([(7*i)%12 for i in j]) for j in B]
-
-TOTAL = C + Cd + D + Dd + E + F + Fd + G + Gd + A + Ad + B
-
-TOTAL_Q = C_quintes+Cd_quintes+D_quintes+Dd_quintes+E_quintes+F_quintes+Fd_quintes+G_quintes+Gd_quintes+A_quintes+Ad_quintes+B_quintes
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -189,10 +154,7 @@ def matrice_dist(list_of_chords,p=1):
             M[i,j] = round(distance(list_of_chords[i],list_of_chords[j],p),2)
     return M
             
-M1 = matrice_dist(TOTAL_Q,1)
-M2 = matrice_dist(TOTAL_Q,2)
-m2 = matrice_dist(TOTAL_Q,0.5)
-M10 = matrice_dist(TOTAL_Q,10)
+
 
 
 
@@ -235,5 +197,94 @@ def test():
 
 
 #temp = temp[:-1]     #enlève le dernier élément de la liste
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Définitions de tous les accords utiles
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+def getChords():
+	CHORDS_TO_STUDY = [Cmaj, Cmin]    #paramètre à changer
+	  
+	C = CHORDS_TO_STUDY
+
+	C = [chord_to_chordNb(i) for i in C]        #Cercle chromatique
+
+	C_quintes = [sorted([(7*i)%12 for i in j]) for j in C]   #Cercle des quintes
+
+
+	Cd = [sorted([(1+i)%12 for i in j]) for j in C] 
+	D  = [sorted([(2+i)%12 for i in j]) for j in C]
+	Dd = [sorted([(3+i)%12 for i in j]) for j in C] 
+	E  = [sorted([(4+i)%12 for i in j]) for j in C] 
+	F  = [sorted([(5+i)%12 for i in j]) for j in C] 
+	Fd = [sorted([(6+i)%12 for i in j]) for j in C] 
+	G  = [sorted([(7+i)%12 for i in j]) for j in C] 
+	Gd = [sorted([(8+i)%12 for i in j]) for j in C] 
+	A  = [sorted([(9+i)%12 for i in j]) for j in C] 
+	Ad = [sorted([(10+i)%12 for i in j]) for j in C] 
+	B  = [sorted([(11+i)%12 for i in j]) for j in C]
+
+	Cd_quintes = [sorted([(7*i)%12 for i in j]) for j in Cd]
+	D_quintes  = [sorted([(7*i)%12 for i in j]) for j in D]
+	Dd_quintes = [sorted([(7*i)%12 for i in j]) for j in Dd]
+	E_quintes  = [sorted([(7*i)%12 for i in j]) for j in E]
+	F_quintes  = [sorted([(7*i)%12 for i in j]) for j in F]
+	Fd_quintes = [sorted([(7*i)%12 for i in j]) for j in Fd]
+	G_quintes  = [sorted([(7*i)%12 for i in j]) for j in G]
+	Gd_quintes = [sorted([(7*i)%12 for i in j]) for j in Gd]
+	A_quintes  = [sorted([(7*i)%12 for i in j]) for j in A]
+	Ad_quintes = [sorted([(7*i)%12 for i in j]) for j in Ad]
+	B_quintes  = [sorted([(7*i)%12 for i in j]) for j in B]
+
+	TOTAL = C + Cd + D + Dd + E + F + Fd + G + Gd + A + Ad + B
+
+	TOTAL_Q = C_quintes+Cd_quintes+D_quintes+Dd_quintes+E_quintes+F_quintes+Fd_quintes+G_quintes+Gd_quintes+A_quintes+Ad_quintes+B_quintes
+
+	return TOTAL, TOTAL_Q
+
+def getPaulMatrix():
+
+if __name__ == "__main__":
+	TOTAL, TOTAL_Q = getChords()
+	M1 = matrice_dist(TOTAL_Q,1)
+	M2 = matrice_dist(TOTAL_Q,2)
+	m2 = matrice_dist(TOTAL_Q,0.5)
+	M10 = matrice_dist(TOTAL_Q,10)
+	print(M1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
