@@ -244,7 +244,7 @@ def getChords():
 
 	return TOTAL, TOTAL_Q
 
-def getPaulMatrix():
+
 
 if __name__ == "__main__":
 	TOTAL, TOTAL_Q = getChords()
