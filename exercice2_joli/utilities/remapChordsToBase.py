@@ -2,13 +2,13 @@ import numpy as np
 import utilities.chordsDistances
 import utilities.chordUtil
 from utilities.chordUtil import *
-from utilities.chordsDistances import getPaulMatrix
 import os
 
 
 
 # only works for 'a0' for thre moment
 def remapPaulToTristan(PaulBaseMatrix, alphabet):
+    
     PaulChords=["C:maj","C:min","C#:maj","C#:min",
     "D:maj","D:min","D#:maj","D#:min",
     "E:maj","E:min","F:maj","F:min",
@@ -18,6 +18,7 @@ def remapPaulToTristan(PaulBaseMatrix, alphabet):
 
     rootname = "inputs/jazz_xlab/"
     filenames = os.listdir(rootname)
+
     dictChord, listChord = utilities.chordUtil.getDictChord(eval(alphabet))
 
 
