@@ -148,10 +148,12 @@ Matrice de distance
 
 def matrice_dist(list_of_chords,p=1):
     n = len(list_of_chords)
-    M = np.ones((n,n))
-    for i in range (0,n) :
-        for j in range (0,n) :
-            M[i,j] = round(distance(list_of_chords[i],list_of_chords[j],p),2)
+    M = np.ones((n+1,n+1))
+    for i in range (0,n+1) :
+        for j in range (0,n+1) :
+            if not (i==n or j==n):
+                M[i,j] = round(distance(list_of_chords[i],list_of_chords[j],p),2)
+    M[n,n]=0
     return M
             
 
@@ -243,6 +245,9 @@ def getChords():
 	TOTAL_Q = C_quintes+Cd_quintes+D_quintes+Dd_quintes+E_quintes+F_quintes+Fd_quintes+G_quintes+Gd_quintes+A_quintes+Ad_quintes+B_quintes
 
 	return TOTAL, TOTAL_Q
+
+
+
 
 
 
