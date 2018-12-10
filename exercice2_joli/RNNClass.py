@@ -20,6 +20,8 @@ from utilities import chordsDistances
 from utilities.chordsDistances import getPaulMatrix
 from utilities import remapChordsToBase
 from utilities.remapChordsToBase import remapPaulToTristan
+from random import choices
+
 
 class MYRNN(nn.Module):
 
@@ -271,7 +273,90 @@ class MYRNN(nn.Module):
     def plotAllTraining(self):
         plotAndTimeUtil.PlotAllResults(self.trainingData)
 
-    def toString(self, model_type, print_every, plot_every, optimizer, lossFunction, alphabet='a0', sequence_lenght=16, using_cuda=True, batch_size=128, shuffle=True, num_workers=6, hidden_size=128, num_layers=2, dropout=0.1, learning_rate=1e-4, epochs=10):
+    def toString(self, model_type, print_every, plot_every, optimizer, lossFunction, alphabet='a0', sequence_lenght=16, using_cuda=True, batch_size=128, shuffle=True, num_workers=6, hidden_size=128, num_layers=2, dropout=0.1, learning_rate=1e-4, epochs=10, use_Paul_distance=False):
         dropoutstr = str(dropout).replace('.',',')
         model_string = "models/"+model_type+str(num_layers)+"layers"+str(hidden_size)+"blocks"+alphabet+"alphabet"+str(sequence_lenght)+"lenSeq"+dropoutstr+"dropout.pt"
         return model_string
+    
+    def generateFromSequence(self, test_sequence, generation_lenght, alphabet, sampling=False, using_cuda=True, silent=True):
+        lenSeq = len(test_sequence)
+        
+        # Cuda blabla
+        if using_cuda:
+            print("Trying using Cuda ...")
+            use_cuda = torch.cuda.is_available()
+            if use_cuda:
+                print("OK")
+            else:
+                print("Woops, Cuda cannot be found :'( ")
+            device = torch.device("cuda:0" if use_cuda else "cpu")
+        else:
+            device = torch.device("cpu")
+            print("Using Cpu")
+        self.to(device)    
+        
+        # Getting chords dictionary
+        rootname = "inputs/jazz_xlab/"
+        filenames = os.listdir(rootname)
+        dictChord, listChord = chordUtil.getDictChord(eval(alphabet))
+        
+        
+        # Initialising objects
+        test_sequence_tensor = torch.zeros(1, len(test_sequence), len(dictChord)).to(device)
+        last_chords_output = torch.zeros(1, lenSeq, len(dictChord)).to(device)
+        test_sequence_tensor.requires_grad = False
+        last_chords_output.requires_grad = False
+        for t in range(len(test_sequence)):
+            test_sequence_tensor[0, t, dictChord[test_sequence[t]]] = 1
+            if t != len(test_sequence)-1 :
+                last_chords_output[0, t-1, dictChord[test_sequence[t]]] = 1
+
+                
+        generated_sequence = [0 for i in range(generation_lenght)]
+        generated_sequence[0:lenSeq] = test_sequence
+
+        self.train(mode=False)
+        softmax = nn.Softmax(dim=0)
+
+        for t in range(generation_lenght-lenSeq):
+            if t == 0:
+                output_probability = self(test_sequence_tensor)
+
+                if sampling:
+                    choice = choices(range(len(listChord)),softmax(output_probability[0]))[0]
+                    generated_sequence[t+lenSeq] = listChord[choice]
+                    last_chords_output[0, lenSeq-1, choice] = 1
+
+                else: 
+                    generated_sequence[t+lenSeq] = listChord[torch.argmax(output_probability).item()]
+                    last_chords_output[0, lenSeq-1, torch.argmax(output_probability).item()] = 1
+
+
+            else:
+
+                last_chords_output.to(device)        
+                output_probability = self(last_chords_output)
+                last_chords_output[0,0:lenSeq-1] = last_chords_output[0,1:lenSeq]
+
+                if sampling:
+                    choice = choices(range(len(listChord)),softmax(output_probability[0]))[0]
+                    generated_sequence[t+lenSeq] = listChord[choice]
+                    last_chords_output[0, lenSeq-1, choice] = 1
+
+                else:
+                    last_chords_output[0, lenSeq-1, torch.argmax(output_probability).item()] = 1
+                    generated_sequence[t+lenSeq] = listChord[torch.argmax(output).item()]
+
+
+        for i in range(generation_lenght):
+            if i%4 == 0:
+                print(generated_sequence[i:i+4])
+            if i == lenSeq-1 :
+                print("generated :")
+                
+        if silent:
+            return
+        else:
+            return generated_sequence
+        
+        
