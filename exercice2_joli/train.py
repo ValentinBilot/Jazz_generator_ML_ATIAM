@@ -34,8 +34,8 @@ num_layers = params['num_layers']
 hidden_size = params['hidden_size']
 alphabet = params['alphabet']
 sequence_lenght = params['sequence_lenght']
-dropoutstr = str(dropout).replace('.',',')
-model_string = "models/"+model_type+str(num_layers)+"layers"+str(hidden_size)+"blocks"+alphabet+"alphabet"+str(sequence_lenght)+"lenSeq"+dropoutstr+"dropout.pt"
+#dropoutstr = str(dropout).replace('.',',')
+model_string = "models/"+model_type+str(num_layers)+"layers"+str(hidden_size)+"blocks"+alphabet+"alphabet"+str(sequence_lenght)+"lenSeq.pt"
 
 
 # Getting alphabet size :
