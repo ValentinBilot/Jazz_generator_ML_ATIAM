@@ -54,7 +54,7 @@ class MYRNN(nn.Module):
 
 
     def forward(self, input_batch):
-        output, (hidden, cell_state) = self.rnn(input_batch)
+        output, hidden = self.rnn(input_batch)
         output = output[:,-1,:]
         output = self.last_fully_connected(output)
         output = self.softmax(output)
@@ -274,8 +274,8 @@ class MYRNN(nn.Module):
         plotAndTimeUtil.PlotAllResults(self.trainingData)
 
     def toString(self, model_type, print_every, plot_every, optimizer, lossFunction, alphabet='a0', sequence_lenght=16, using_cuda=True, batch_size=128, shuffle=True, num_workers=6, hidden_size=128, num_layers=2, dropout=0.1, learning_rate=1e-4, epochs=10, use_Paul_distance=False):
-        dropoutstr = str(dropout).replace('.',',')
-        model_string = "models/"+model_type+str(num_layers)+"layers"+str(hidden_size)+"blocks"+alphabet+"alphabet"+str(sequence_lenght)+"lenSeq"+dropoutstr+"dropout.pt"
+        #dropoutstr = str(dropout).replace('.',',')
+        model_string = "models/"+model_type+str(num_layers)+"layers"+str(hidden_size)+"blocks"+alphabet+"alphabet"+str(sequence_lenght)+"lenSeq.pt"
         return model_string
     
     def generateFromSequence(self, test_sequence, generation_lenght, alphabet, sampling=False, using_cuda=True, silent=True):

@@ -64,7 +64,7 @@ else:
 
 params['epochs']=100
 params['learning_rate']=1e-4
-params['dropout']=0.05
+#params['dropout']=0.05
 
 myNetwork.trainAndTest(**params)
 
