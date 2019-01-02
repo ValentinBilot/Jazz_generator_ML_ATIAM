@@ -1,5 +1,5 @@
 # Jazz_generator_ML_ATIAM
-## Machine Learning Project to generate jazz like a boss
+Machine Learning Project to generate jazz like a boss
 
 If you see this project for the first time, start by having a look on the jupyter notebook Train.ipynb in the exercice2_joli folder. 
 
