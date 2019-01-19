@@ -10,29 +10,29 @@ Created on Tue Nov 21 12:38:02 2017
 -- Tristan Metadata and conv
 ----------------------------------------------------------------------"""
 
-#%%
+# %%
 dictBass = {
-        '1'     : 0,
-        '#1'    : 1,
-        'b2'    : 1,
-        '2'     : 2,
-        '#2'    : 3,
-        'b3'    : 3,
-        '3'     : 4,
-        '4'     : 5,
-        '#4'    : 6,
-        'b5'    : 6,
-        '5'     : 7,
-        '#5'    : 8,
-        'b6'    : 8,
-        '6'     : 9,
-        '#6'    : 10,
-        'b7'    : 10,
-        '7'     : 11,
-        'b9'    : 3,
-        '9'     : 4,
-        'N'     : 12
-        }
+    '1': 0,
+    '#1': 1,
+    'b2': 1,
+    '2': 2,
+    '#2': 3,
+    'b3': 3,
+    '3': 4,
+    '4': 5,
+    '#4': 6,
+    'b5': 6,
+    '5': 7,
+    '#5': 8,
+    'b6': 8,
+    '6': 9,
+    '#6': 10,
+    'b7': 10,
+    '7': 11,
+    'b9': 3,
+    '9': 4,
+    'N': 12
+}
 
 QUALITIES = {
     #           1     2     3     4  5     6     7
@@ -78,7 +78,7 @@ a0 = {
     'min7':    'min',
     'minmaj7': 'min',
     'maj6':    'maj',
-    '6':    'maj', #add
+    '6':    'maj',  # add
     'min6':    'min',
     'dim7':    'N',
     'hdim7':   'N',
@@ -97,7 +97,7 @@ a0 = {
     'b13':     'maj',
     '1':       'N',
     '5':       'N',
-    '': 'N'} #alphabet = maj/min
+    '': 'N'}  # alphabet = maj/min
 
 a1 = {
     'maj':     'maj',
@@ -107,7 +107,7 @@ a1 = {
     'sus4':    'N',
     'sus2':    'N',
     '7':       'maj',
-	'6':    'maj', #add
+    '6':    'maj',  # add
     'maj7':    'maj',
     'min7':    'min',
     'minmaj7': 'min',
@@ -130,8 +130,8 @@ a1 = {
     'b13':     'maj',
     '1':       'N',
     '5':       'N',
-    '': 'N'} #alphabet = maj/min/dim -> armonisation gamme majeur en accords de 3 sons
-      
+    '': 'N'}  # alphabet = maj/min/dim -> armonisation gamme majeur en accords de 3 sons
+
 a2 = {
     'maj':     'maj',
     'min':     'min',
@@ -139,7 +139,7 @@ a2 = {
     'dim':     'dim',
     'sus4':    'N',
     'sus2':    'N',
-    '6':    'maj', #add
+    '6':    'maj',  # add
     '7':       '7',
     'maj7':    'maj7',
     'min7':    'min7',
@@ -163,7 +163,7 @@ a2 = {
     'b13':     'maj',
     '1':       'N',
     '5':       'N',
-    '': 'N'} #alphabet = maj/min/maj7/min7/7/dim/dim7 -> harmonisation gamme majeur en accords de 4 sons
+    '': 'N'}  # alphabet = maj/min/maj7/min7/7/dim/dim7 -> harmonisation gamme majeur en accords de 4 sons
 
 a3 = {
     'maj':     'maj',
@@ -172,7 +172,7 @@ a3 = {
     'dim':     'dim',
     'sus4':    'sus',
     'sus2':    'sus',
-    '6':    'maj6', #add
+    '6':    'maj6',  # add
     '7':       '7',
     'maj7':    'maj7',
     'min7':    'min7',
@@ -196,7 +196,7 @@ a3 = {
     'b13':     'maj',
     '1':       'N',
     '5':       'N',
-    '': 'N'} #alphabet = maj/min/maj7/min7/7/dim/dim7/aug/sus
+    '': 'N'}  # alphabet = maj/min/maj7/min7/7/dim/dim7/aug/sus
 
 a5 = {
     'maj':     'maj',
@@ -205,7 +205,7 @@ a5 = {
     'dim':     'dim',
     'sus4':    'sus4',
     'sus2':    'sus2',
-    '6':    'maj6', #add
+    '6':    'maj6',  # add
     '7':       '7',
     'maj7':    'maj7',
     'min7':    'min7',
@@ -214,7 +214,7 @@ a5 = {
     'min6':    'min6',
     'dim7':    'dim7',
     'hdim7':   'hdim7',
-    'hdim':    'hdim7', #vérifié avec Pedro
+    'hdim':    'hdim7',  # vérifié avec Pedro
     'maj9':    'maj7',
     'min9':    'min7',
     '9':       '7',
@@ -223,13 +223,13 @@ a5 = {
     'min11':   'min',
     '11':      'maj',
     '#11':     'maj',
-    'maj13':   'maj', #maj7??
+    'maj13':   'maj',  # maj7??
     'min13':   'min',
     '13':      'maj',
     'b13':     'maj',
-    '1':       'N', #X
-    '5':       'N', #X
-    '': 'N'} #de l'article STRUCTURED TRAINING FOR LARGE-VOCABULARY CHORD RECOGNITION
+    '1':       'N',  # X
+    '5':       'N',  # X
+    '': 'N'}  # de l'article STRUCTURED TRAINING FOR LARGE-VOCABULARY CHORD RECOGNITION
 
 gamme = {
     'Ab':   'G#',
@@ -250,8 +250,8 @@ gamme = {
     'Gb':   'F#',
     'G':    'G',
     'G#':   'G#',
-    'N' :   'N',
-    '' :    'N'}
+    'N':   'N',
+    '':    'N'}
 
 tr = {
     'G':    'G#',
@@ -266,8 +266,9 @@ tr = {
     'E':    'F',
     'F':    'F#',
     'F#':   'G',
-    'N' :   'N',
-    '' :    'N'}
+    'N':   'N',
+    '':    'N'}
+
 
 def getDictChord(alpha):
     '''
@@ -290,7 +291,7 @@ def getDictChord(alpha):
                 if u != 'N':
                     chordList.append(v+":"+u)
     chordList.append('N')
-    #print(set(chordList))
+    # print(set(chordList))
     listChord = list(set(chordList))
     for i in range(len(listChord)):
         dictChord[listChord[i]] = i
@@ -298,7 +299,8 @@ def getDictChord(alpha):
 
 #dictA0 = getDictChord(a3)
 
-def reduChord(initChord, alpha= 'a1', transp = 0):
+
+def reduChord(initChord, alpha='a1', transp=0):
     '''
     Fonction def
 
@@ -310,44 +312,45 @@ def reduChord(initChord, alpha= 'a1', transp = 0):
     Returns
     -------
     loss_function: function
-    '''    
+    '''
     if initChord == "":
         print("buuug")
-    initChord, bass = initChord.split("/") if "/" in initChord else (initChord, "")
+    initChord, bass = initChord.split(
+        "/") if "/" in initChord else (initChord, "")
     root, qual = initChord.split(":") if ":" in initChord else (initChord, "")
     root, noChord = root.split("(") if "(" in root else (root, "")
-    qual, additionalNotes = qual.split("(") if "(" in qual else (qual, "")  
-    
+    qual, additionalNotes = qual.split("(") if "(" in qual else (qual, "")
+
     root = gamme[root]
     for i in range(transp):
         print("transpo")
         root = tr[root]
-    
+
     if qual == "":
         if root == "N" or noChord != "":
             finalChord = "N"
         else:
             finalChord = root + ':maj'
-    
+
     elif root == "N":
         finalChord = "N"
-    
+
     else:
         if alpha == 'a1':
-                qual = a1[qual]
+            qual = a1[qual]
         elif alpha == 'a0':
-                qual = a0[qual]
+            qual = a0[qual]
         elif alpha == 'a2':
-                qual = a2[qual]
+            qual = a2[qual]
         elif alpha == 'a3':
-                qual = a3[qual]
+            qual = a3[qual]
         elif alpha == 'a5':
-                qual = a5[qual]
+            qual = a5[qual]
         elif alpha == 'reduceWOmodif':
-                qual = qual
+            qual = qual
         else:
-                print("wrong alphabet value")
-                qual = qual
+            print("wrong alphabet value")
+            qual = qual
         if qual == "N":
             finalChord = "N"
         else:

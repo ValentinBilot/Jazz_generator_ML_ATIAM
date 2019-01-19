@@ -6,7 +6,7 @@ Created on Fri Nov 23 17:43:07 2018
 @author: carsault
 """
 
-#%%
+# %%
 import torch
 from random import randint
 from utilities import chordUtil
@@ -16,7 +16,7 @@ from utilities.dataImport import *
 from sklearn.model_selection import train_test_split
 import os
 
-#%%
+# %%
 # CUDA for PyTorch
 use_cuda = torch.cuda.is_available()
 print("use_cuda")
@@ -28,13 +28,15 @@ lenSeq = 16
 alpha = 'a0'
 rootname = "inputs/jazz_xlab/"
 filenames = os.listdir(rootname)
-#filenames.remove(".DS_Store")
+# filenames.remove(".DS_Store")
 dictChord, listChord = chordUtil.getDictChord(eval(alpha))
 
 # Create datasets
-files_train ,files_test = train_test_split(filenames,test_size=0.7)
-dataset_train = dataImport.ChordSeqDataset(files_train, rootname, alpha, dictChord, lenSeq)
-dataset_test = dataImport.ChordSeqDataset(files_test, rootname, alpha, dictChord, lenSeq)
+files_train, files_test = train_test_split(filenames, test_size=0.7)
+dataset_train = dataImport.ChordSeqDataset(
+    files_train, rootname, alpha, dictChord, lenSeq)
+dataset_test = dataImport.ChordSeqDataset(
+    files_test, rootname, alpha, dictChord, lenSeq)
 
 # Create generators
 params = {'batch_size': 64,
@@ -50,19 +52,18 @@ max_epochs = 500
 for epoch in range(max_epochs):
     # Training
     if epoch % print_every == 0:
-	    print(epoch)
+        print(epoch)
     for local_batch, local_labels in training_generator:
         # Transfer to GPU
-        local_batch, local_labels = local_batch.to(device), local_labels.to(device)
+        local_batch, local_labels = local_batch.to(
+            device), local_labels.to(device)
 
         # //// Train the model  ////
 
     # Testing
     for local_batch, local_labels in testing_generator:
         # Transfer to GPU
-        local_batch, local_labels = local_batch.to(device), local_labels.to(device)
+        local_batch, local_labels = local_batch.to(
+            device), local_labels.to(device)
 
         # //// Test the model  ////
-
-
-
