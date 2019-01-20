@@ -51,21 +51,16 @@ class MYGRU(nn.Module):
     # 9 is use_Paul_distance
 
         # Usefull for monitoring
+        #TODO reimplement the monitoring part adapted to the GAN case
         self.trainingData = [[0], ["None"], ["None"], [
             [0]], [[0]], [[0]], [[0]], [0], [0], ["No"]]
 
     def forward(self, input_batch):
         output, hidden = self.rnn(input_batch)
         output = output[:, -1, :]
-        #print("outputsize : ")
-        # print(output.size())
         output = self.last_fully_connected(output)
-        #print("outputsize : ")
-        # print(output.size())
         # not sure about the dim = 1 in softmax
         output = self.softmax(output)
-        #print("outputsize : ")
-        # print(output.size())
         return output
 
     def trainAndTest(self, model_type, print_every, plot_every, optimizer, lossFunction, alphabet='a0', sequence_lenght=16, using_cuda=True, batch_size=128, shuffle=True, num_workers=6, hidden_size=128, num_layers=2, dropout=0.1, learning_rate=1e-4, epochs=10, use_Paul_distance=False):
@@ -158,10 +153,11 @@ class MYGRU(nn.Module):
         else:
             raise ValueError("This loss function is unknown to me")
 
+            
+        # Training
         if training:
             print("Start training")
         for epoch in range(1, epochs):
-            # Training
             if training:
                 self.train(mode=True)
                 for local_batch, local_labels in training_generator:
@@ -223,7 +219,7 @@ class MYGRU(nn.Module):
         loss = 0
         correct_guess, wrong_guess = 0, 0
 
-        # if tensor of shape 1 in loss function (ex : CrossEntropy)
+        # if tensor of shape 1 in loss function (ex : CrossEntropy) use the line bellow instead
         # local_labels_argmax = torch.tensor(
         #    [torch.argmax(local_label) for local_label in local_labels]).to(device)
 
@@ -261,7 +257,7 @@ class MYGRU(nn.Module):
         loss = 0
         correct_guess, wrong_guess = 0, 0
 
-        # if tensor of shape 1 in loss function (ex : CrossEntropy)
+        # if tensor of shape 1 in loss function (ex : CrossEntropy) use the line bellow instead
         # local_labels_argmax = torch.tensor(
         #    [torch.argmax(local_label) for local_label in local_labels]).to(device)
         local_batch, local_labels = local_batch.to(
@@ -290,6 +286,8 @@ class MYGRU(nn.Module):
         return output, loss.item() / len(local_batch), correct_guess, wrong_guess
 
     def trainOnDis(self, model_type, print_every, optimizer, lossFunction, disNet, alphabet='a0', sequence_lenght_in=16, sequence_lenght_out=16, using_cuda=True, batch_size=128, shuffle=True, num_workers=6, hidden_size_generator=128, num_layers_generator=2, dropout_generator=0.1, learning_rate_generator=1e-4, epochs=10, sampling=True):
+        
+        #TODO: understand why disNet.train(mode=False) makes the traniing fail
         # disNet.train(mode=False)
         self.train(mode=True)
 
@@ -382,6 +380,7 @@ class MYGRU(nn.Module):
                     totalSize = 0
 
             # Testing
+            # TODO implement testing
             # self.train(mode=False)
 
         return all_losses, genWinTest
@@ -395,12 +394,16 @@ class MYGRU(nn.Module):
         loss = 0
         correct_guess = 0
         softmax = nn.Softmax(dim=1)
+        
+        #TODO: put temperature in the parameters
+        # temperature is for the sampling part
+        # high temperature will increase likelyhood of unlikely events and reduce likelyhood of very probable events
         temperature = 2
 
         # if tensor of shape 1 in loss function (ex : CrossEntropy)
         #local_labels_argmax = torch.tensor([torch.argmax(local_label) for local_label in local_labels]).to(device)
 
-        #local_labels = local_labels.to(device)
+        # initialasing the working_batch that will be used as a buffer for the generative part
         working_batch = torch.zeros(
             [len(local_batch), sequence_lenght_in+sequence_lenght_out, len(local_batch[0, 0])])
         working_batch[:, 0:sequence_lenght_in,
@@ -409,22 +412,18 @@ class MYGRU(nn.Module):
 
         for i in range(sequence_lenght_out):
             output = self.forward(local_batch)
-            #local_batch[:,0:sequence_lenght_in-1,:] = local_batch[:,1:sequence_lenght_in,:]
+
 
             if sampling:
                 #choice = choices(range(len(listChord)),softmax(output[0]))[0]
-                # print(output.size())
                 output = softmax(output)
                 _output = output.cpu().div(temperature).exp().data
 
-                # print(output.size())
+                # doing the sampling
                 topi = torch.multinomial(_output, 1)
-                # print(topi.size())
-                # print(working_batch.size())
                 for k in range(len(local_batch)):
                     working_batch[k, sequence_lenght_in +
                                   i, topi[k, 0].item()] = 1
-                # print(working_batch[0])
             else:
                 # TODO
                 generated_sequence[sequence_lenght_in] = listChord[torch.argmax(
@@ -432,19 +431,19 @@ class MYGRU(nn.Module):
                 local_batch[:, sequence_lenght_in,
                             torch.argmax(output[:, :]).item()] = 1
 
-        # print(working_batch.size())
-        # local_batch has been transformed in output
+        
         disNet.to(device)
+        # Getting discriminator output to compute the loss
         disDecision = disNet(
             working_batch[:, sequence_lenght_in:, :].to(device))
 
-        # TODO : change that 0 in something more relevant
-
+        # computing fooling (a.k.a accuracy)
         fooling = 0
         for i in range(len(local_batch)):
             if disDecision[i, 0].item() > 0.5:
                 fooling += 1
-        # print(disDecision.size())
+                
+        # Loss computing and backpropagation
         loss = criterion(disDecision, torch.ones(
             [len(local_batch), 1], dtype=torch.float).to(device))
         loss.backward()

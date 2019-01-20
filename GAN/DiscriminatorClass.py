@@ -34,22 +34,17 @@ class MYDis(nn.Module):
         self.last_fully_connected = nn.Linear(hidden_size_discriminator, 1)
         # not sure about the dim = 1 in softmax
         #self.softmax = nn.LogSoftmax(dim=1)
-
+        
+        #TODO : reimplement that, as in the SimpleRNNS folder 
         # Usefull for monitoring
         #self.trainingData = [[0],["None"],["None"],[[0]],[[0]],[[0]],[[0]],[0],[0],["No"]]
 
     def forward(self, input_batch):
         output, hidden = self.rnn(input_batch)
         output = output[:, -1, :]
-        #print("outputsize : ")
-        # print(output.size())
         output = self.last_fully_connected(output)
-        #print("outputsize : ")
-        # print(output.size())
         # not sure about the dim = 1 in softmax
         #output = self.softmax(output)
-        #print("outputsize : ")
-        # print(output.size())
         return output
 
     def trainOnGen(self, model_type, print_every, optimizer, lossFunction, genNet, alphabet='a0', sequence_lenght_in=16, sequence_lenght_out=16, using_cuda=True, batch_size=128, shuffle=True, num_workers=6, hidden_size_discriminator=128, num_layers_discriminator=2, dropout_discriminator=0.1, learning_rate_discriminator=1e-4, epochs=10, sampling=True):
@@ -146,13 +141,13 @@ class MYDis(nn.Module):
                     totalSize = 0
 
             # Testing
+            #TODO: implement testing
             # self.train(mode=False)
 
         return all_losses, disOnGenWinTest
 
 
-# define Train on one batch function
-
+    # Define Train on one batch function
 
     def oneBatchTrainOnGen(self, local_batch, local_labels, optimizer, criterion, device, sequence_lenght_in, sequence_lenght_out, sampling, genNet):
 
@@ -160,12 +155,15 @@ class MYDis(nn.Module):
         loss = 0
         correct_guess = 0
         softmax = nn.Softmax(dim=1)
+        #TODO: put temperature in the parameters
+        # temperature is for the sampling part
+        # high temperature will increase likelyhood of unlikely events and reduce likelyhood of very probable events
         temperature = 2
 
-        # if tensor of shape 1 in loss function (ex : CrossEntropy)
+        # if tensor of shape 1 in loss function (ex : CrossEntropy), do the line bellow
         #local_labels_argmax = torch.tensor([torch.argmax(local_label) for local_label in local_labels]).to(device)
 
-        #local_labels = local_labels.to(device)
+        # initialasing the working_batch that will be used as a buffer for the generative part
         working_batch = torch.zeros(
             [len(local_batch), sequence_lenght_in+sequence_lenght_out, len(local_batch[0, 0])])
         working_batch[:, 0:sequence_lenght_in,
@@ -174,22 +172,16 @@ class MYDis(nn.Module):
 
         for i in range(sequence_lenght_out):
             output = genNet.forward(local_batch)
-            #local_batch[:,0:sequence_lenght_in-1,:] = local_batch[:,1:sequence_lenght_in,:]
 
             if sampling:
-                #choice = choices(range(len(listChord)),softmax(output[0]))[0]
-                # print(output.size())
                 output = softmax(output)
                 _output = output.cpu().div(temperature).exp().data
-
-                # print(output.size())
+                # doing the sampling
                 topi = torch.multinomial(_output, 1)
-                # print(topi.size())
-                # print(working_batch.size())
+
                 for k in range(len(local_batch)):
                     working_batch[k, sequence_lenght_in +
                                   i, topi[k, 0].item()] = 1
-                # print(working_batch[0])
             else:
                 # TODO
                 generated_sequence[sequence_lenght_in] = listChord[torch.argmax(
@@ -197,17 +189,17 @@ class MYDis(nn.Module):
                 local_batch[:, sequence_lenght_in,
                             torch.argmax(output[:, :]).item()] = 1
 
-        # print(working_batch.size())
-        # local_batch has been transformed in output
         self.to(device)
+        
+        # Getting the discriminator output
         disDecision = self(working_batch[:, sequence_lenght_in:, :].to(device))
 
-        # TODO : change that 0 in something more relevant
+        # calculating fooling (a.k.a accuracy)
         fooling = 0
         for i in range(len(local_batch)):
             if disDecision[i, 0].item() < 0.5:
                 fooling += 1
-        # print(disDecision.size())
+                
         loss = criterion(disDecision, torch.zeros(
             [len(local_batch), 1], dtype=torch.float).to(device))
         loss.backward()
