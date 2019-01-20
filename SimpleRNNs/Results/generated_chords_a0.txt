@@ -297,4 +297,71 @@ generated :
 ['C:maj', 'C:maj', 'C:maj', 'C:maj']
 
 
+gru 2 layers 512 blocks  avec custom distance
+
+
+55 % accuracy
+
+['C:maj', 'F:maj', 'C:maj', 'C:maj']
+['F:maj', 'F:maj', 'C:maj', 'C:maj']
+['G:maj', 'F:maj', 'C:maj', 'G:maj']
+['C:maj', 'C:maj', 'F:maj', 'G:maj']
+generated :
+['G:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'D:min', 'F#:min', 'C:maj']
+['C:maj', 'G:maj', 'C:maj', 'G:maj']
+['C:maj', 'C:maj', 'D:min', 'G:maj']
+['A:min', 'G:maj', 'G:maj', 'D:min']
+['G:maj', 'A:min', 'G:maj', 'A:min']
+['A:min', 'G:maj', 'C:maj', 'G:maj']
+['G:maj', 'G:maj', 'A:min', 'E:min']
+['G:maj', 'B:maj', 'D:min', 'G:maj']
+['A:min', 'E:min', 'C:maj', 'G:maj']
+['G:maj', 'G:maj', 'G:maj', 'A:min']
+
+
+63 % accuracy
+
+['C:maj', 'F:maj', 'C:maj', 'C:maj']
+['F:maj', 'F:maj', 'C:maj', 'C:maj']
+['G:maj', 'F:maj', 'C:maj', 'G:maj']
+['C:maj', 'C:maj', 'F:maj', 'G:maj']
+generated :
+['G:maj', 'C:maj', 'C:maj', 'G:maj']
+['C:maj', 'C:maj', 'C:maj', 'G:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['G:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'G:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'G:maj', 'C:maj']
+['N', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'G:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'G:maj', 'G:maj']
+['C:maj', 'C:maj', 'C:maj', 'G:maj']
+
+
+
+67 % accuracy
+
+
+['C:maj', 'F:maj', 'C:maj', 'C:maj']
+['F:maj', 'F:maj', 'C:maj', 'C:maj']
+['G:maj', 'F:maj', 'C:maj', 'G:maj']
+['C:maj', 'C:maj', 'F:maj', 'G:maj']
+generated :
+['G:maj', 'G:maj', 'C:maj', 'C:maj']
+['C:maj', 'G:min', 'F:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'F:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'G:min', 'C:maj', 'F:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+['C:maj', 'C:maj', 'C:maj', 'C:maj']
+
 
