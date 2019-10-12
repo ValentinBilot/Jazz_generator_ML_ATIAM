@@ -1,5 +1,5 @@
 # Jazz_generator_ML_ATIAM
-Machine Learning Project to generate jazz like a boss
+Machine Learning Project to generate jazz chord progressions with one-hot vectors sequences.
 
 If you see this project for the first time, start by having a look in the SimpleRNNs folder. 
 
